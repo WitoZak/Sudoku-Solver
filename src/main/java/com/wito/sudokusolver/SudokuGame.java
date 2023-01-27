@@ -1,42 +1,61 @@
 package com.wito.sudokusolver;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class SudokuGame {
 
     private static final int GRID_SIZE = 9;
 
     public static void main(String[] args) {
+        int[][] userInputBoard = new int[GRID_SIZE][GRID_SIZE];
+        printEmptyBoard();
 
-        int[][] board = {
-                {0, 2, 8, 9, 0, 5, 7, 0, 4},
-                {0, 0, 4, 1, 0, 0, 5, 9, 6},
-                {9, 1, 0, 6, 4, 0, 0, 2, 3},
-                {0, 4, 2, 8, 0, 0, 6, 3, 5},
-                {1, 9, 6, 3, 0, 4, 2, 0, 7},
-                {0, 8, 3, 0, 0, 0, 1, 0, 0},
-                {2, 6, 0, 0, 0, 3, 4, 7, 0},
-                {0, 0, 0, 4, 0, 1, 9, 5, 2},
-                {0, 0, 0, 7, 0, 0, 3, 0, 0},
-        };
+        Scanner scanner = new Scanner(System.in);
 
-        printBoard(board);
-
-
-        if (boardSolver(board)) {
-            System.out.println("""
-
-                    Solved successfully!
-                    """);
-        } else {
-            System.out.println("""
-
-                    Unsolvable board!
-                    """);
+        boolean gameFinished = false;
+        while (!gameFinished) {
+            System.out.println("Enter your move (row, column, value) or type 'SUDOKU' to solve the board:");
+            getUserInputBoard(scanner, userInputBoard);
+            printBoard(userInputBoard);
         }
-
-        printBoard(board);
     }
 
-    private static void printBoard(int[][] board) {
+
+    private static void getUserInputBoard(Scanner scanner, int[][] userInputBoard) {
+        try {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("SUDOKU")) {
+                boardSolver(userInputBoard);
+                System.out.println("Solved successfully!");
+                printBoard(userInputBoard);
+
+                System.exit(0);
+
+            } else {
+                String[] inputArr = input.split(",");
+
+                int row = Integer.parseInt(inputArr[0]);
+                int col = Integer.parseInt(inputArr[1]);
+                int var = Integer.parseInt(inputArr[2]);
+
+                if(userInputBoard[row][col] != 0) {
+                    throw new IllegalArgumentException();
+                }
+                userInputBoard[row][col] = var;
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid command entered, Please enter 'SUDOKU' to solve the board or  'row, column, value' to make a move.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Invalid input. Please enter a value between 1 and 9");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. The cell is already occupied.");
+        }
+    }
+
+
+
+    private static void printBoard(int[][] userInputBoard) {
         for (int row = 0; row < GRID_SIZE; row++) {
             if (row % 3 == 0 && row != 0) {
                 System.out.println("-----------");
@@ -45,7 +64,22 @@ public class SudokuGame {
                 if (col % 3 == 0 && col != 0) {
                     System.out.print("|");
                 }
-                System.out.print(board[row][col]);
+                System.out.print(userInputBoard[row][col]);
+            }
+            System.out.println();
+        }
+    }
+
+    private static void printEmptyBoard() {
+        for (int row = 0; row < GRID_SIZE; row++) {
+            if (row % 3 == 0 && row != 0) {
+                System.out.println("-----------");
+            }
+            for (int col = 0; col < GRID_SIZE; col++) {
+                if (col % 3 == 0 && col != 0) {
+                    System.out.print("|");
+                }
+                System.out.print(" ");
             }
             System.out.println();
         }
@@ -90,18 +124,18 @@ public class SudokuGame {
                 !isNumberIn3x3(board, number, row, col);
     }
 
-    private static boolean boardSolver(int[][] board) {
+    private static boolean boardSolver(int[][] userInputBoard) {
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
-                if (board[row][col] == 0) {
+                if (userInputBoard[row][col] == 0) {
                     for (int numberToTry = 1; numberToTry <= GRID_SIZE; numberToTry++) {
-                        if (isValidMove(board, numberToTry, row, col)) {
-                            board[row][col] = numberToTry;
+                        if (isValidMove(userInputBoard, numberToTry, row, col)) {
+                            userInputBoard[row][col] = numberToTry;
 
-                            if (boardSolver(board)) {
+                            if (boardSolver(userInputBoard)) {
                                 return true;
                             } else {
-                                board[row][col] = 0;
+                                userInputBoard[row][col] = 0;
                             }
                         }
                     }
