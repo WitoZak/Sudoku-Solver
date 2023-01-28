@@ -22,7 +22,7 @@ public class SudokuGame {
     }
 
 
-    private static void getUserInputBoard(Scanner scanner, int[][] userInputBoard) {
+    private static int[][] getUserInputBoard(Scanner scanner, int[][] userInputBoard) {
         try {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("SUDOKU")) {
@@ -51,6 +51,7 @@ public class SudokuGame {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid input. The cell is already occupied.");
         }
+        return userInputBoard;
     }
 
 
