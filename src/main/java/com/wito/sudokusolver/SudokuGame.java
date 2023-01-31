@@ -13,9 +13,8 @@ public class SudokuGame {
 
         Scanner scanner = new Scanner(System.in);
 
-        boolean gameFinished = false;
-        while (!gameFinished) {
-            System.out.println("Enter your move (row, column, value) or type 'SUDOKU' to solve the board:");
+        while (true) {
+            System.out.println("Enter your move (row, column, value) -single or multiple in a row- or type 'SUDOKU' to solve the board:");
             getUserInputBoard(scanner, userInputBoard);
         }
     }
@@ -31,16 +30,19 @@ public class SudokuGame {
 
                 playAgain(scanner, userInputBoard);
             } else {
-                String[] inputArr = input.split(",");
+                String[] inputs = input.split(",");
 
-                int row = Integer.parseInt(inputArr[0]);
-                int col = Integer.parseInt(inputArr[1]);
-                int var = Integer.parseInt(inputArr[2]);
+                for (int i = 0; i < inputs.length; i += 3) {
+                    int row = Integer.parseInt(inputs[i]) - 1;
+                    int col = Integer.parseInt(inputs[i + 1]) - 1;
+                    int var = Integer.parseInt(inputs[i + 2]);
 
-                if(userInputBoard[row][col] != 0) {
-                    throw new IllegalArgumentException();
+                    if(userInputBoard[row][col] != 0 ||
+                            inputs.length % 3 != 0) {
+                        throw new IllegalArgumentException();
+                    }
+                    userInputBoard[row][col] = var;
                 }
-                userInputBoard[row][col] = var;
                 printBoard(userInputBoard);
 
             }
