@@ -17,12 +17,11 @@ public class SudokuGame {
         while (!gameFinished) {
             System.out.println("Enter your move (row, column, value) or type 'SUDOKU' to solve the board:");
             getUserInputBoard(scanner, userInputBoard);
-            printBoard(userInputBoard);
         }
     }
 
 
-    private static int[][] getUserInputBoard(Scanner scanner, int[][] userInputBoard) {
+    private static void getUserInputBoard(Scanner scanner, int[][] userInputBoard) {
         try {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("SUDOKU")) {
@@ -30,8 +29,7 @@ public class SudokuGame {
                 System.out.println("Solved successfully!");
                 printBoard(userInputBoard);
 
-                System.exit(0);
-
+                playAgain(scanner, userInputBoard);
             } else {
                 String[] inputArr = input.split(",");
 
@@ -43,6 +41,8 @@ public class SudokuGame {
                     throw new IllegalArgumentException();
                 }
                 userInputBoard[row][col] = var;
+                printBoard(userInputBoard);
+
             }
         } catch (InputMismatchException e) {
             System.out.println("Invalid command entered, Please enter 'SUDOKU' to solve the board or  'row, column, value' to make a move.");
@@ -51,10 +51,27 @@ public class SudokuGame {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid input. The cell is already occupied.");
         }
-        return userInputBoard;
     }
 
+    private static void playAgain(Scanner scanner, int[][] userInputBoard) {
+        System.out.println("Do you want to play again? (y/n)");
+        String playAgain = scanner.nextLine();
+        if (playAgain.equalsIgnoreCase("y")) {
+            for (int i = 0; i < GRID_SIZE; i++) {
+                for (int j = 0; j < GRID_SIZE; j++) {
+                    userInputBoard[i][j] = 0;
+                }
+            }
+            printEmptyBoard();
 
+        } else if (playAgain.equalsIgnoreCase("n")) {
+            System.out.println("Thanks for playing!");
+            System.exit(0);
+        } else {
+            System.out.println("Invalid input. Please enter 'y' to play again or 'n' to quit.");
+            playAgain(scanner, userInputBoard);
+        }
+    }
 
     private static void printBoard(int[][] userInputBoard) {
         for (int row = 0; row < GRID_SIZE; row++) {
@@ -80,7 +97,7 @@ public class SudokuGame {
                 if (col % 3 == 0 && col != 0) {
                     System.out.print("|");
                 }
-                System.out.print(" ");
+                System.out.print("0");
             }
             System.out.println();
         }
