@@ -7,3 +7,4 @@ Multi-input cords/values enable (ez. 2,2,2,3,3,3,...)
 Simple couter of loops and posibbilitis of solving is present.
 
 
+ 
