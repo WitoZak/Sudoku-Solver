@@ -8,3 +8,4 @@ Simple couter of loops and posibbilitis of solving is present.
 
 
  
+ 
