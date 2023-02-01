@@ -6,6 +6,8 @@ import java.util.Scanner;
 public class SudokuGame {
 
     private static final int GRID_SIZE = 9;
+    private static int loopCounter = 0;
+    private static int guessCounter = 0;
 
     public static void main(String[] args) {
         int[][] userInputBoard = new int[GRID_SIZE][GRID_SIZE];
@@ -14,7 +16,7 @@ public class SudokuGame {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Enter your move (row, column, value) -single or multiple in a row- or type 'SUDOKU' to solve the board:");
+            System.out.println("Enter your move (row, column, value) or type 'SUDOKU' to solve the board:");
             getUserInputBoard(scanner, userInputBoard);
         }
     }
@@ -27,7 +29,7 @@ public class SudokuGame {
                 boardSolver(userInputBoard);
                 System.out.println("Solved successfully!");
                 printBoard(userInputBoard);
-
+                System.out.println("Thanks for playing! Difficulty rating: " + loopCounter + " loop iterations, " + guessCounter + " guess procedures");
                 playAgain(scanner, userInputBoard);
             } else {
                 String[] inputs = input.split(",");
@@ -67,7 +69,7 @@ public class SudokuGame {
             printEmptyBoard();
 
         } else if (playAgain.equalsIgnoreCase("n")) {
-            System.out.println("Thanks for playing!");
+            System.out.println("See You later!");
             System.exit(0);
         } else {
             System.out.println("Invalid input. Please enter 'y' to play again or 'n' to quit.");
@@ -151,11 +153,13 @@ public class SudokuGame {
                     for (int numberToTry = 1; numberToTry <= GRID_SIZE; numberToTry++) {
                         if (isValidMove(userInputBoard, numberToTry, row, col)) {
                             userInputBoard[row][col] = numberToTry;
-
+                            loopCounter++;
                             if (boardSolver(userInputBoard)) {
+                                guessCounter--;
                                 return true;
                             } else {
                                 userInputBoard[row][col] = 0;
+                                guessCounter++;
                             }
                         }
                     }
